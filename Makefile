@@ -8,7 +8,7 @@ LDFLAGS = "-s -w -X github.com/yieldr/navitaire-ods/pkg/version.Version=$(VERSIO
 OS ?= darwin
 ARCH ?= amd64
 
-build: generate
+build:
 	@GOOS=$(OS) GOARCH=$(ARCH) go build -o bin/navitaire-ods-$(OS)-$(ARCH) -ldflags $(LDFLAGS)
 
 vet:
