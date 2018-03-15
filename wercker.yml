@@ -28,7 +28,8 @@ release:
   - script:
       name: get version
       code: |
-        export VERSION=$(./navitaire-ods-linux-amd64 version --short)
+        # export VERSION=$(./navitaire-ods-linux-amd64 version --short)
+        export VERSION="v0.0.1"
         echo $VERSION
 
   - wercker/github-create-release@2.1.1:
