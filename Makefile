@@ -9,7 +9,11 @@ OS ?= darwin
 ARCH ?= amd64
 
 build:
+ifeq ($(OS),windows)
+	@GOOS=$(OS) GOARCH=$(ARCH) go build -o bin/navitaire-ods-$(OS)-$(ARCH).exe -ldflags $(LDFLAGS)
+else
 	@GOOS=$(OS) GOARCH=$(ARCH) go build -o bin/navitaire-ods-$(OS)-$(ARCH) -ldflags $(LDFLAGS)
+endif
 
 test:
 	@go test $(PKGS)

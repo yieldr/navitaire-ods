@@ -24,6 +24,12 @@ build:
         cp bin/* "$WERCKER_OUTPUT_DIR/"
 
 release:
+  # Uses the git tag when building the binaries. It's important to tag a release
+  # before pushing to the remote. Run the following to ensure the tag is present
+  # before the build step is run.
+  #
+  #   git push origin --tags
+  #
   steps:
   - script:
       name: get version
@@ -46,5 +52,5 @@ release:
 
   - wercker/github-upload-asset@2.1.1:
       token: $GITHUB_TOKEN
-      file: navitaire-ods-windows-386
+      file: navitaire-ods-windows-386.exe
       content-type: application/octet-stream
