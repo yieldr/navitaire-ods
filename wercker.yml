@@ -1,0 +1,50 @@
+box: golang
+
+build:
+  steps:
+  - setup-go-workspace:
+      package-dir: github.com/yieldr/navitaire-ods
+  - script:
+      name: make build
+      code: |
+        make build OS=linux ARCH=amd64
+        make build OS=darwin ARCH=amd64
+        make build OS=windows ARCH=386
+  - script:
+      name: make test
+      code: |
+        make test
+  - script:
+      name: make vet
+      code: |
+        make vet
+  - script:
+      name: copy binary
+      code: |
+        cp bin/* "$WERCKER_OUTPUT_DIR/"
+
+release:
+  steps:
+  - script:
+      name: get version
+      code: |
+        export VERSION=$(./navitaire-ods-darwin-amd64 version --short)
+
+  - wercker/github-create-release@1.0.1:
+      token: $GITHUB_TOKEN
+      tag: $VERSION
+
+  - wercker/github-upload-asset@1.0.1:
+      token: $GITHUB_TOKEN
+      file: navitaire-ods-linux-amd64
+      content-type: application/octet-stream
+
+  - wercker/github-upload-asset@1.0.1:
+      token: $GITHUB_TOKEN
+      file: navitaire-ods-darwin-amd64
+      content-type: application/octet-stream
+
+  - wercker/github-upload-asset@1.0.1:
+      token: $GITHUB_TOKEN
+      file: navitaire-ods-darwin-amd64
+      content-type: application/octet-stream
