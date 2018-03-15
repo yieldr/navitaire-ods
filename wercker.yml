@@ -28,7 +28,7 @@ release:
   - script:
       name: get version
       code: |
-        export VERSION=$(./navitaire-ods-darwin-amd64 version --short)
+        export VERSION=$(./navitaire-ods-linux-amd64 version --short)
 
   - wercker/github-create-release@1.0.1:
       token: $GITHUB_TOKEN
