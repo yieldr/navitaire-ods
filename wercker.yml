@@ -29,23 +29,22 @@ release:
       name: get version
       code: |
         export VERSION=$(./navitaire-ods-linux-amd64 version --short)
-        env
 
-  # - wercker/github-create-release@2.1.1:
-  #     token: $GITHUB_TOKEN
-  #     tag: $VERSION
+  - wercker/github-create-release@2.1.1:
+      token: $GITHUB_TOKEN
+      tag: $VERSION
 
-  # - wercker/github-upload-asset@2.1.1:
-  #     token: $GITHUB_TOKEN
-  #     file: navitaire-ods-linux-amd64
-  #     content-type: application/octet-stream
+  - wercker/github-upload-asset@2.1.1:
+      token: $GITHUB_TOKEN
+      file: navitaire-ods-linux-amd64
+      content-type: application/octet-stream
 
-  # - wercker/github-upload-asset@2.1.1:
-  #     token: $GITHUB_TOKEN
-  #     file: navitaire-ods-darwin-amd64
-  #     content-type: application/octet-stream
+  - wercker/github-upload-asset@2.1.1:
+      token: $GITHUB_TOKEN
+      file: navitaire-ods-darwin-amd64
+      content-type: application/octet-stream
 
-  # - wercker/github-upload-asset@2.1.1:
-  #     token: $GITHUB_TOKEN
-  #     file: navitaire-ods-windows-386
-  #     content-type: application/octet-stream
+  - wercker/github-upload-asset@2.1.1:
+      token: $GITHUB_TOKEN
+      file: navitaire-ods-windows-386
+      content-type: application/octet-stream
