@@ -15,9 +15,6 @@ import (
 	"github.com/yieldr/navitaire-ods/pkg/yieldr"
 )
 
-var argRun struct {
-}
-
 var cmdRun = &cobra.Command{
 	Use:   "run",
 	Short: "Run the uploader",

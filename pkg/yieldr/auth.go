@@ -13,9 +13,9 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// Config describes a 2-legged OAuth2 flow, with both the
+// OAuth describes a 2-legged OAuth2 flow, with both the
 // client application information and the server's endpoint URLs.
-type Config struct {
+type OAuth struct {
 	// ClientID is the application's ID.
 	ClientID string
 
@@ -36,7 +36,7 @@ type Config struct {
 // Token uses client credentials to retrieve a token.
 // The HTTP client to use is derived from the context.
 // If nil, http.DefaultClient is used.
-func (c *Config) Token(ctx context.Context) (*oauth2.Token, error) {
+func (c *OAuth) Token(ctx context.Context) (*oauth2.Token, error) {
 	return c.TokenSource(ctx).Token()
 }
 
@@ -44,7 +44,7 @@ func (c *Config) Token(ctx context.Context) (*oauth2.Token, error) {
 // The token will auto-refresh as necessary. The underlying
 // HTTP transport will be obtained using the provided context.
 // The returned client and its Transport should not be modified.
-func (c *Config) Client(ctx context.Context) *http.Client {
+func (c *OAuth) Client(ctx context.Context) *http.Client {
 	return oauth2.NewClient(ctx, c.TokenSource(ctx))
 }
 
@@ -52,8 +52,8 @@ func (c *Config) Client(ctx context.Context) *http.Client {
 // automatically refreshing it as necessary using the provided context and the
 // client ID and client secret.
 //
-// Most users will use Config.Client instead.
-func (c *Config) TokenSource(ctx context.Context) oauth2.TokenSource {
+// Most users will use OAuth.Client instead.
+func (c *OAuth) TokenSource(ctx context.Context) oauth2.TokenSource {
 	source := &tokenSource{
 		ctx:  ctx,
 		conf: c,
@@ -63,7 +63,7 @@ func (c *Config) TokenSource(ctx context.Context) oauth2.TokenSource {
 
 type tokenSource struct {
 	ctx  context.Context
-	conf *Config
+	conf *OAuth
 }
 
 // Token refreshes the token by using a new client credentials request.
