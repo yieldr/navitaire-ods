@@ -11,8 +11,11 @@ ARCH ?= amd64
 build:
 	@GOOS=$(OS) GOARCH=$(ARCH) go build -o bin/navitaire-ods-$(OS)-$(ARCH) -ldflags $(LDFLAGS)
 
+test:
+	@go test $(PKGS)
+
 vet:
-	@go vet ./...
+	@go vet $(PKGS)
 
 generate:
-	@go generate ./...
+	@go generate $(PKGS)
