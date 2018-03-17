@@ -1,4 +1,4 @@
-DECLARE @carrier_code VARCHAR(2) = 'VB';
+DECLARE @carrier_code VARCHAR(2) = @p1;
 
 SELECT
   i.CarrierCode      AS carrier,

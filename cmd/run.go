@@ -5,10 +5,10 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/yieldr/navitaire-ods/pkg/navitaire/ods"
@@ -28,15 +28,33 @@ either the Yieldr API or SFTP.`,
 
 func run(cmd *cobra.Command, args []string) {
 
+	if viper.GetBool("debug") {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
+	logrus.Debug("Running Navitaire ODS flight uploader")
+
+	db := viper.GetString("db")
+	dbAddr := viper.GetString("db-addr")
+	dbUser := viper.GetString("db-user")
+	dbPass := viper.GetString("db-pass")
+	dbName := viper.GetString("db-name")
+
+	logrus.WithFields(logrus.Fields{
+		"addr": dbAddr,
+		"user": dbUser,
+		"pass": maskPassword(dbPass, '*'),
+		"name": dbName,
+	}).Debug("Connecting to Navitaire ODS")
+
 	o, err := ods.New(&ods.ODSConfig{
-		Driver:   viper.GetString("db"),
-		Addr:     viper.GetString("db-addr"),
-		User:     viper.GetString("db-user"),
-		Password: viper.GetString("db-pass"),
-		Database: viper.GetString("db-name"),
+		Driver:   db,
+		Addr:     dbAddr,
+		User:     dbUser,
+		Password: dbPass,
+		Database: dbName,
 	})
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "failed connecting to Navitaire ODS. %s", err)
+		logrus.Errorf("Failed connecting to Navitaire ODS. %s", err)
 		os.Exit(1)
 	}
 
@@ -55,17 +73,41 @@ func run(cmd *cobra.Command, args []string) {
 	}
 
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "failed reading query. %s", err)
+		logrus.Errorf("Failed reading query. %s", err)
 		os.Exit(1)
 	}
+
+	logrus.WithFields(logrus.Fields{
+		"query": string(q),
+		"args":  queryArgs,
+	}).Debug("Executing query")
 
 	flights, err := o.Query(string(q), queryArgs...)
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "failed querying for flights. %s", err)
+		logrus.Errorf("Failed querying for flights. %s", err)
 		os.Exit(1)
 	}
 
+	logrus.WithField("flights", len(flights)).Debugf("Retrieved %d flights", len(flights))
+
 	if viper.GetBool("api") {
+
+		apiAddr := viper.GetString("api-addr")
+		apiClientID := viper.GetString("api-client-id")
+		apiClientSecret := viper.GetString("api-client-secret")
+		apiProjectID := viper.GetInt("api-project-id")
+
+		if apiProjectID == -1 {
+			logrus.Errorf("The --api-project-id flag is required\n")
+			os.Exit(1)
+		}
+
+		logrus.WithFields(logrus.Fields{
+			"api-addr":          apiAddr,
+			"api-client-id":     apiClientID,
+			"api-client-secret": maskPassword(apiClientSecret, '*'),
+			"api-project-id":    apiProjectID,
+		}).Debug("Connecting to Yieldr API")
 
 		var buf bytes.Buffer
 		e := json.NewEncoder(&buf)
@@ -74,26 +116,20 @@ func run(cmd *cobra.Command, args []string) {
 		}
 
 		yldr := yieldr.New(&yieldr.YieldrConfig{
-			Addr:         viper.GetString("api-addr"),
-			ClientID:     viper.GetString("api-client-id"),
-			ClientSecret: viper.GetString("api-client-secret"),
+			Addr:         apiAddr,
+			ClientID:     apiClientID,
+			ClientSecret: apiClientSecret,
 		})
 
-		projectID := viper.GetInt("api-project-id")
-		if projectID == -1 {
-			fmt.Fprintf(os.Stdout, "The --api-project-id flag is required\n")
-			os.Exit(1)
-		}
-
-		err = yldr.Upload(projectID, buf.Bytes())
+		err = yldr.Upload(apiProjectID, buf.Bytes())
 		if err != nil {
-			fmt.Fprintf(os.Stdout, "failed uploading flights to Yieldr. %s", err)
+			logrus.Errorf("failed uploading flights to Yieldr. %s", err)
 			os.Exit(1)
 		}
 	}
 
 	if viper.GetBool("sftp") {
-		fmt.Fprintf(os.Stderr, "SFTP upload is not supported yet!")
+		logrus.Errorf("SFTP upload is not supported yet!")
 		os.Exit(1)
 	}
 }
@@ -136,4 +172,12 @@ func init() {
 	viper.BindPFlag("db-name", cmdRun.Flags().Lookup("db-name"))
 	viper.BindPFlag("db-query", cmdRun.Flags().Lookup("db-query"))
 	viper.BindPFlag("db-query-args", cmdRun.Flags().Lookup("db-query-args"))
+}
+
+func maskPassword(s string, mask rune) string {
+	m := make([]rune, len(s))
+	for i, _ := range s {
+		m[i] = mask
+	}
+	return string(m)
 }

@@ -7,3 +7,5 @@
 .glide/
 .wercker/
 bin/*
+*.sh
+*.bat

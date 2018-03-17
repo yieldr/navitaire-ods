@@ -2,16 +2,43 @@
 
 
 [[projects]]
+  name = "github.com/certifi/gocertifi"
+  packages = ["."]
+  revision = "deb3ae2ef2610fde3330947281941c562861188b"
+  version = "2018.01.18"
+
+[[projects]]
+  name = "github.com/cpuguy83/go-md2man"
+  packages = ["md2man"]
+  revision = "20f5889cbdc3c73dbd2862796665e7c465ade7d1"
+  version = "v1.0.8"
+
+[[projects]]
   branch = "master"
   name = "github.com/denisenkom/go-mssqldb"
+  packages = [
+    ".",
+    "internal/cp"
+  ]
+  revision = "270bc3860bb94dd3a3ffd047377d746c5e276726"
+
+[[projects]]
+  name = "github.com/evalphobia/logrus_sentry"
   packages = ["."]
-  revision = "5afb84a439488df337dc5682527e4ea85e406acd"
+  revision = "57846a82817615f185b10cc40de8dc60c1ca5ae1"
+  version = "v0.4.5"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
   version = "v1.4.7"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/getsentry/raven-go"
+  packages = ["."]
+  revision = "563b81fc02b75d664e54da31f787c2cc2186780b"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -81,6 +108,18 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/russross/blackfriday"
+  packages = ["."]
+  revision = "55d61fa8aa702f59229e6cff85793c22e580eaf5"
+  version = "v1.5.1"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
+
+[[projects]]
   name = "github.com/spf13/afero"
   packages = [
     ".",
@@ -97,7 +136,10 @@
 
 [[projects]]
   name = "github.com/spf13/cobra"
-  packages = ["."]
+  packages = [
+    ".",
+    "doc"
+  ]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
   version = "v0.0.1"
 
@@ -122,8 +164,11 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["md4"]
-  revision = "c4a91bd4f524f10d064139674cf55852e055ad01"
+  packages = [
+    "md4",
+    "ssh/terminal"
+  ]
+  revision = "b4956d363a8b14623cc81db401707679605930a3"
 
 [[projects]]
   branch = "master"
@@ -132,7 +177,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "892bf7b0c6e2f93b51166bf3882e50277fa5afc6"
+  revision = "e0c57d8f86c17f0724497efcb3bc617e82834821"
 
 [[projects]]
   branch = "master"
@@ -141,13 +186,16 @@
     ".",
     "internal"
   ]
-  revision = "7af32f14d0a25aec7873e0683e8e48dcead159a8"
+  revision = "fdc9e635145ae97e6c2cb777c48305600cf515cb"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
-  revision = "8c0ece68c28377f4c326d85b94f8df0dace46f80"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "cc7307a45468e49eaf2997c890f14aa03a26917b"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -185,6 +233,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e20705b3436798e6b44b96130bbda77678728573250566690495081321c31d6f"
+  inputs-digest = "bff1df06eb864bb6de69fc57f9a31a08493e8e91b6ac03530c8a9ee500f2ee70"
   solver-name = "gps-cdcl"
   solver-version = 1

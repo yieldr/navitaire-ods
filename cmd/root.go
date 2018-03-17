@@ -12,7 +12,8 @@ import (
 )
 
 var cmdRoot = &cobra.Command{
-	Use: "navitaire-ods",
+	Use:   "navitaire-ods",
+	Short: "Root command",
 	Long: `Yieldr - Navitaire ODS Flight Uploader
 
 Use this program to query your Navitaire ODS database for flight performance and
@@ -35,4 +36,7 @@ func init() {
 		viper.SetEnvPrefix("YIELDR")
 		viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	})
+
+	cmdRoot.PersistentFlags().BoolP("debug", "d", false, "Enable debug mode to print more verbose logs")
+	viper.BindPFlag("debug", cmdRoot.PersistentFlags().Lookup("debug"))
 }
