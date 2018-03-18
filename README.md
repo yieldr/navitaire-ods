@@ -7,7 +7,7 @@ Upload flight performance from [Navitaire New Skies](http://www.navitaire.com/p_
 Head over to the [releases](https://github.com/yieldr/navitaire-ods/releases) page and download a version appropriate for your operating system and architecture.
 
 ```
-curl -sSL -o navitaire-ods https://github.com/yieldr/navitaire-ods/releases/download/v0.0.1-alpha.3/navitaire-ods-linux-amd64
+curl -sSL -o navitaire-ods https://github.com/yieldr/navitaire-ods/releases/download/<VERSION>/navitaire-ods-<OS>-<ARCH>
 ```
 
 ## Usage
@@ -30,11 +30,11 @@ navitaire-ods run \
 	--db-query-args=<carrier-code>
 ```
 
-Flags can alternatively be replace with environment variables. The convention is `YIELDR_` followed by the flag name in capital letters with dashes (`-`) replaced by undescores (`_`). For example the `--api-addr` flag can be defined as the `YIELDR_API_ADDR` environment variable.
+Flags can alternatively be replaced with environment variables. The convention is `YIELDR_` followed by the flag name in capital letters with dashes (`-`) replaced by undescores (`_`). For example the `--api-addr` flag can be defined as the `YIELDR_API_ADDR` environment variable.
 
 ### SQL Query
 
-An [example SQL query](pkg/navitaire/ods/query.sql) is supplied for convenience, but in most cases you might want to customise it to match your use case.
+A [sample SQL query](pkg/navitaire/ods/query.sql) is supplied for guidance, but in most cases you would want to customise it to match your use case.
 
 ## Yieldr API
 
