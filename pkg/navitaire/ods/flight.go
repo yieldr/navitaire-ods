@@ -30,15 +30,17 @@ func (f *Flight) AncillaryRevenue() float64 { return f.ancillaryRevenue.Float64 
 
 func (f *Flight) MarshalJSON() ([]byte, error) {
 	v := map[string]interface{}{
-		"carrier":           f.Carrier(),
-		"origin":            f.Origin(),
-		"destination":       f.Destination(),
-		"flight_number":     f.FlightNumber(),
-		"date_departure":    f.DateDeparture(),
-		"seats_sold":        f.SeatsSold(),
-		"seats_available":   f.SeatsAvailable(),
-		"revenue":           f.Revenue(),
-		"ancillary_revenue": f.AncillaryRevenue(),
+		"carrier":              f.Carrier(),
+		"origin":               f.Origin(),
+		"destination":          f.Destination(),
+		"flight_number":        f.FlightNumber(),
+		"date_departure":       f.DateDeparture().Format("2006-01-02 15:04:05"),
+		"weight":               0,
+		"seats_sold":           f.SeatsSold(),
+		"seats_available":      f.SeatsAvailable(),
+		"projected_seats_sold": 0,
+		"revenue":              f.Revenue(),
+		"ancillary_revenue":    f.AncillaryRevenue(),
 	}
 	return json.Marshal(v)
 }

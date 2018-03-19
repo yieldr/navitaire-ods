@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -83,7 +84,7 @@ func (c *tokenSource) Token() (*oauth2.Token, error) {
 		AccessToken:  tk.AccessToken,
 		TokenType:    tk.TokenType,
 		RefreshToken: tk.RefreshToken,
-		Expiry:       tk.Expiry,
+		Expiry:       time.Now().Add(time.Second * tk.ExpiresIn),
 	}
 	return t.WithExtra(tk.Raw), nil
 }
@@ -101,6 +102,7 @@ func (c *tokenSource) retrieveToken(ctx context.Context, tokenURL string, v inte
 	}
 	req = req.WithContext(ctx)
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Length", fmt.Sprintf("%d", len(b)))
 
 	r, err := http.DefaultClient.Do(req)
 	if err != nil {
@@ -132,23 +134,23 @@ func (c *tokenSource) retrieveToken(ctx context.Context, tokenURL string, v inte
 type Token struct {
 	// AccessToken is the token that authorizes and authenticates
 	// the requests.
-	AccessToken string
+	AccessToken string `json:"access_token"`
 
 	// TokenType is the type of token.
 	// The Type method returns either this or "Bearer", the default.
-	TokenType string
+	TokenType string `json:"token_type"`
 
 	// RefreshToken is a token that's used by the application
 	// (as opposed to the user) to refresh the access token
 	// if it expires.
-	RefreshToken string
+	RefreshToken string `json:"refresh_token"`
 
-	// Expiry is the optional expiration time of the access token.
+	// ExpiresIn is the optional expiration time of the access token.
 	//
 	// If zero, TokenSource implementations will reuse the same
 	// token forever and RefreshToken or equivalent
 	// mechanisms for that TokenSource will not be used.
-	Expiry time.Time
+	ExpiresIn time.Duration `json:"expires_in"`
 
 	// Raw optionally contains extra metadata from the server
 	// when updating a token.

@@ -45,6 +45,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	req2 := cloneRequest(req) // per RoundTripper contract
 	token.SetAuthHeader(req2)
 	t.setModReq(req, req2)
+
 	res, err := t.base().RoundTrip(req2)
 	if err != nil {
 		t.setModReq(req, nil)

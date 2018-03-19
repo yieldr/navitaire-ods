@@ -38,7 +38,7 @@ func New(c *ODSConfig) (*ODS, error) {
 
 	db, err := sql.Open(c.Driver, url.String())
 	if err != nil {
-		return nil, errors.Wrap(err, "failed connecting to the database server")
+		return nil, errors.Wrap(err, "Failed connecting to the database server")
 	}
 
 	return &ODS{db}, nil
@@ -54,7 +54,7 @@ func (ods *ODS) Query(query string, args ...string) ([]*Flight, error) {
 
 	rows, err := ods.db.Query(query, iargs...)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed querying the database")
+		return nil, errors.Wrap(err, "Failed querying the database")
 	}
 	defer rows.Close()
 
@@ -76,7 +76,7 @@ func (ods *ODS) Query(query string, args ...string) ([]*Flight, error) {
 			&f.revenue,
 			&f.ancillaryRevenue)
 		if err != nil {
-			return nil, errors.Wrap(err, "failed scanning row into a flight struct")
+			return nil, errors.Wrap(err, "Failed scanning row into a flight struct")
 		}
 
 		if len(flights) == cap(flights) {

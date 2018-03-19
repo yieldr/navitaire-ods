@@ -121,11 +121,23 @@ func run(cmd *cobra.Command, args []string) {
 			ClientSecret: apiClientSecret,
 		})
 
-		err = yldr.Upload(apiProjectID, buf.Bytes())
+		r, err := yldr.Upload(apiProjectID, buf.Bytes())
 		if err != nil {
-			logrus.Errorf("failed uploading flights to Yieldr. %s", err)
+			logrus.Errorf("Failed uploading flights to Yieldr. %s", err)
+			for _, lineErr := range r.Errors {
+				for _, err := range lineErr.Errors {
+					logrus.WithFields(logrus.Fields{
+						"line":    lineErr.Line,
+						"code":    err.Code,
+						"message": err.Message,
+					}).Error("Constraint violation")
+				}
+			}
+
 			os.Exit(1)
 		}
+
+		logrus.Debugf("Response from Yieldr API. %s", r.Message)
 	}
 
 	if viper.GetBool("sftp") {
