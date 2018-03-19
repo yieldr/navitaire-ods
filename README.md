@@ -36,6 +36,18 @@ Flags can alternatively be replaced with environment variables. The convention i
 
 A [sample SQL query](pkg/navitaire/ods/query.sql) is supplied for guidance, but in most cases you would want to customise it to match your use case.
 
+You can select a file containing your desired SQL query using the `--db-query` flag or the `YIELDR_DB_QUERY` environment variable.
+
+```bash
+navitaire-ods run --db-query=file.sql --db-query-args=foo --db-query-args=bar
+```
+
+The SQL query could also be passed via standard input. Using the `--db-query` flag set to `-` instructs the program to read the query from stdin.
+
+```bash
+cat file.sql | navitaire-ods run --db-query="-" --db-query-args=foo
+```
+
 ## Yieldr API
 
 To find your `client_id` and `client_secret` you will need to create a [Yieldr API Integration](https://help.yieldr.com/yieldr-api/section-heading/step-2-integrate-with-the-yieldr-api).
