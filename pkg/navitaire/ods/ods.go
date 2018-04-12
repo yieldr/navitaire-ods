@@ -4,6 +4,8 @@ package ods
 import (
 	"database/sql"
 	"net/url"
+	"strconv"
+	"time"
 
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
@@ -13,11 +15,12 @@ import (
 )
 
 type ODSConfig struct {
-	Driver   string
-	Addr     string
-	User     string
-	Password string
-	Database string
+	Driver      string
+	Addr        string
+	User        string
+	Password    string
+	Database    string
+	ConnTimeout time.Duration
 }
 
 type ODS struct {
@@ -28,6 +31,7 @@ func New(c *ODSConfig) (*ODS, error) {
 
 	q := url.Values{}
 	q.Set("database", c.Database)
+	q.Set("connection+timeout", strconv.Itoa(int(c.ConnTimeout.Seconds())))
 
 	url := url.URL{
 		Scheme:   c.Driver,

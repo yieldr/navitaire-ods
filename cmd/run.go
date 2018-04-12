@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -38,6 +39,7 @@ func run(cmd *cobra.Command, args []string) {
 	dbUser := viper.GetString("db-user")
 	dbPass := viper.GetString("db-pass")
 	dbName := viper.GetString("db-name")
+	dbConnTimeout := viper.GetDuration("db-conn-timeout")
 
 	logrus.WithFields(logrus.Fields{
 		"addr": dbAddr,
@@ -47,11 +49,12 @@ func run(cmd *cobra.Command, args []string) {
 	}).Debug("Connecting to Navitaire ODS")
 
 	o, err := ods.New(&ods.ODSConfig{
-		Driver:   db,
-		Addr:     dbAddr,
-		User:     dbUser,
-		Password: dbPass,
-		Database: dbName,
+		Driver:      db,
+		Addr:        dbAddr,
+		User:        dbUser,
+		Password:    dbPass,
+		Database:    dbName,
+		ConnTimeout: dbConnTimeout,
 	})
 	if err != nil {
 		logrus.Errorf("Failed connecting to Navitaire ODS. %s", err)
@@ -176,6 +179,7 @@ func init() {
 	cmdRun.Flags().String("db-name", "", "Database name")
 	cmdRun.Flags().String("db-query", "", "SQL file to run against the database. Use a dash (-) for stdin or leave empty for the default query")
 	cmdRun.Flags().StringSlice("db-query-args", []string{}, "Arguments to the sql query")
+	cmdRun.Flags().Duration("db-conn-timeout", 30*time.Second, "Database connection timeout")
 	viper.BindPFlag("db", cmdRun.Flags().Lookup("db"))
 	viper.BindPFlag("db-addr", cmdRun.Flags().Lookup("db-addr"))
 	viper.BindPFlag("db-user", cmdRun.Flags().Lookup("db-user"))
@@ -184,6 +188,7 @@ func init() {
 	viper.BindPFlag("db-name", cmdRun.Flags().Lookup("db-name"))
 	viper.BindPFlag("db-query", cmdRun.Flags().Lookup("db-query"))
 	viper.BindPFlag("db-query-args", cmdRun.Flags().Lookup("db-query-args"))
+	viper.BindPFlag("db-conn-timeout", cmdRun.Flags().Lookup("db-conn-timeout"))
 }
 
 func maskPassword(s string, mask rune) string {

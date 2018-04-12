@@ -83,7 +83,7 @@ func querySql() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "query.sql", size: 3653, mode: os.FileMode(420), modTime: time.Unix(1521279857, 0)}
+	info := bindataFileInfo{name: "query.sql", size: 3653, mode: os.FileMode(420), modTime: time.Unix(1523549630, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
