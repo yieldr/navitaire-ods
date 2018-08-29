@@ -112,4 +112,4 @@ FROM (
        AND i.ArrivalStation = ar.ArrivalStation
        AND i.FlightNumber = ar.FlightNumber
        AND i.STD = ar.STD
-WHERE i.STD >= CONVERT(date, current_timestamp);
+WHERE i.STD >= DATEADD(DAY, -3, current_timestamp);
