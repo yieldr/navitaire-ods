@@ -2,6 +2,8 @@
 package ods
 
 import (
+	"bufio"
+	"bytes"
 	"database/sql"
 	"net/url"
 	"strconv"
@@ -31,7 +33,7 @@ func New(c *ODSConfig) (*ODS, error) {
 
 	q := url.Values{}
 	q.Set("database", c.Database)
-	q.Set("connection+timeout", strconv.Itoa(int(c.ConnTimeout.Seconds())))
+	q.Set("connection timeout", strconv.Itoa(int(c.ConnTimeout.Seconds())))
 
 	url := url.URL{
 		Scheme:   c.Driver,
@@ -100,4 +102,22 @@ func (ods *ODS) Query(query string, args ...string) ([]*Flight, error) {
 
 func DefaultQuery() []byte {
 	return MustAsset("query.sql")
+}
+
+func CompactQuery(q []byte) []byte {
+	var w bytes.Buffer
+
+	s := bufio.NewScanner(bytes.NewBuffer(q))
+	s.Split(bufio.ScanWords)
+
+	for s.Scan() {
+		w.Write(bytes.TrimSpace(s.Bytes()))
+		w.WriteRune(' ')
+	}
+
+	if w.Len() > 0 {
+		return w.Bytes()[:w.Len()-1]
+	}
+
+	return w.Bytes()
 }
