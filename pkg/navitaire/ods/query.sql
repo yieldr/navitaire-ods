@@ -1,4 +1,5 @@
 DECLARE @carrier_code VARCHAR(2) = @p1;
+DECLARE @currency CHAR(3) = @p2;
 
 SELECT
   i.CarrierCode      AS carrier,
@@ -41,7 +42,7 @@ FROM (
       il.ArrivalStation,
       il.FlightNumber,
       il.STD,
-      SUM(pjc.ChargeAmount) AS Revenue
+      SUM(pjc.ChargeAmount * cc.ConversionRate) AS Revenue
     FROM Booking AS b
       INNER JOIN BookingPassenger AS bp WITH ( NOLOCK )
         ON b.BookingID = bp.BookingID
@@ -50,6 +51,11 @@ FROM (
       INNER JOIN PassengerJourneyCharge AS pjc WITH ( NOLOCK )
         ON pjs.PassengerID = pjc.PassengerID
            AND pjs.SegmentID = pjc.SegmentID
+      INNER JOIN Currency AS c
+        ON c.CurrencyCode = pjc.CurrencyCode
+      INNER JOIN CurrencyConversion AS cc
+        ON cc.FromCurrencyCode = c.CurrencyCode
+           AND cc.ToCurrencyCode = @currency
       INNER JOIN PassengerJourneyLeg AS pjl WITH ( NOLOCK )
         ON pjs.PassengerID = pjl.PassengerID
            AND pjs.SegmentID = pjl.SegmentID
@@ -79,7 +85,7 @@ FROM (
       il.ArrivalStation,
       il.FlightNumber,
       il.STD,
-      SUM(pfc.ChargeAmount) AS Revenue
+      SUM(pfc.ChargeAmount * cc.ConversionRate) AS Revenue
     FROM Booking AS b
       INNER JOIN BookingPassenger AS bp WITH ( NOLOCK )
         ON b.BookingID = bp.BookingID
@@ -88,6 +94,11 @@ FROM (
       INNER JOIN PassengerFeeCharge AS pfc WITH ( NOLOCK )
         ON pf.PassengerID = pfc.PassengerID
            AND pf.FeeNumber = pfc.FeeNumber
+      INNER JOIN Currency AS c
+        ON c.CurrencyCode = pfc.CurrencyCode
+      INNER JOIN CurrencyConversion AS cc
+        ON cc.FromCurrencyCode = c.CurrencyCode
+           AND cc.ToCurrencyCode = @currency
       INNER JOIN PassengerJourneySegment AS pjs WITH ( NOLOCK )
         ON bp.PassengerID = pjs.PassengerID
       INNER JOIN PassengerJourneyLeg AS pjl WITH ( NOLOCK )

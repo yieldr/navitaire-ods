@@ -61,6 +61,7 @@ func run(cmd *cobra.Command, args []string) {
 		log.Errorf("Failed connecting to Navitaire ODS. %s", err)
 		os.Exit(1)
 	}
+	log.Debug("Connected")
 
 	query := viper.GetString("db-query")
 	queryArgs := viper.GetStringSlice("db-query-args")
@@ -75,6 +76,8 @@ func run(cmd *cobra.Command, args []string) {
 	default:
 		q, err = ioutil.ReadFile(query)
 	}
+
+	log.WithField("query", string(q)).Debugf("Running query")
 
 	if err != nil {
 		log.Errorf("Failed reading query. %s", err)
