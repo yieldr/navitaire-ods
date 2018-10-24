@@ -19,7 +19,7 @@ FROM (
          il.FlightNumber,
          il.STD,
          SUM(ic.ClassSold)               AS SeatsSold,
-         il.Capacity - SUM(ic.ClassSold) AS SeatsAvailable
+         il.AdjustedCapacity - SUM(ic.ClassSold) AS SeatsAvailable
        FROM InventoryLeg AS il
          INNER JOIN InventoryLegClass AS ic WITH ( NOLOCK )
            ON il.InventoryLegID = ic.InventoryLegID
@@ -32,7 +32,7 @@ FROM (
          il.ArrivalStation,
          il.STD,
          il.FlightNumber,
-         il.Capacity
+         il.AdjustedCapacity
      ) AS i
   INNER JOIN
   (
